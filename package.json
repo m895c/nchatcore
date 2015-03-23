@@ -1,0 +1,9 @@
+{
+  "name": "nchatcore",
+  "version": "0.0.1",
+  "description": "nchat server side core",
+  "dependencies": {
+    "express": "^4.12.3",
+    "socket.io": "^1.3.5"
+  }
+}
