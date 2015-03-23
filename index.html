@@ -29,8 +29,13 @@
 
   </head>
   <body>
-     <h1>nChat core  E71lkjhs76 init //SOCid: NOT POPULATED<h1>
-    <ul id="messages"></ul>
+    <!-- <h1>nChat core  E71lkjhs76 init //SOCid: NOT POPULATED<h1> -->
+
+    <button id="search" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Search
+    </button>
+
+    <ul id="messages"> </ul>
     <form action="">
 
     <input id="m" autocomplete="off" /><button>Send</button>
@@ -52,12 +57,12 @@
     return false;
   });
 
+
+
     socket.on('chat message', function(msg){
    $('#messages').append($('<li>').text(msg));
 
     });
-
-
 
   </script>
 
