@@ -1,0 +1,2 @@
+# nchatcore
+Nchat Server code
