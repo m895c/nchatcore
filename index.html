@@ -43,9 +43,12 @@
   <script>
   var socket = io();
   $('#send_message button').click(function(){
+    if($('#message').val().length>0)
+    {
     socket.emit('chat message', $('#message').val());
     $('#message').val('');
-    return false;
+    return false;}
+
   });
 
 
