@@ -10,6 +10,11 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
+//# TODO: setup static file serving correctly
+app.get('/css/main.css', function(req, res){
+  res.sendFile(__dirname + '/css/main.css');
+});
+
 io.on('connection', function(socket){
 
     socket.on('chat message', function(msg){
