@@ -17,22 +17,28 @@
 
   </head>
   <body>
+  <div class="container">
     <!-- <h1>nChat core  E71lkjhs76 init //SOCid: NOT POPULATED<h1> -->
 
     <button id="search" type="button" class="btn btn-primary btn-lg">
         <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Search
     </button>
 
-    <section class="messages">
-      <ul class="messages"></ul>
-    </section>
-
-    <div id="send_message" class="input-group">
-      <input type="text" id="message" class="form-control" placeholder="Type your message here...">
-      <span class="input-group-btn">
-        <button type="button" id="send_message_button" class="btn btn-default"> Send </button>
-      </span>
+    <div class="row">
+      <section class="messages">
+        <ul class="messages"></ul>
+      </section>
     </div>
+
+    <div class="row input">
+      <div id="send_message" class="input-group">
+        <input type="text" id="message" class="form-control" placeholder="Type your message here...">
+        <span class="input-group-btn">
+          <button type="button" id="send_message_button" class="btn btn-default"> Send </button>
+        </span>
+      </div>
+    </div>
+  </div>
 
   </body>
 
