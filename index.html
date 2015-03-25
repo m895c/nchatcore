@@ -19,9 +19,19 @@
   <body>
     <!-- <h1>nChat core  E71lkjhs76 init //SOCid: NOT POPULATED<h1> -->
 
-    <button id="search" type="button" class="btn btn-primary btn-lg">
-        <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Search
+    <button id="infojuli" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Juliana
     </button>
+
+    <button id="search" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Search
+    </button>
+
+    <button id="infoanan" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Ananth
+    </button>
+
+
 
     <section class="messages">
       <ul class="messages"></ul>
@@ -57,17 +67,45 @@
 
     });
 
+    socket.on('matched', function(msg){
+   $('ul.messages').append($('<li>').text(msg));
+
+    });
+
+
+
+
   $("#message").keyup(function(event){
       if(event.keyCode == 13){
           $("button#send_message_button").click();
       }
   });
 
-  $('#search').click(function(){
+  $('#infojuli').click(function(){
 
     socket.emit('info', {name: 'Juliana', age: 30, sex: 0, target: 1, token: '8kjdlfa23874'});
 
+
   });
+
+  $('#infoanan').click(function(){
+
+    socket.emit('info', {name: 'Ananth', age: 27, sex: 1, target: 0, token: '9jgn6fa2as74'});
+
+
+  });
+
+
+
+
+
+
+  $('#search').click(function(){
+
+    socket.emit('search', {name: 'Juliana', age: 30, sex: 0, target: 1, token: '8kjdlfa23874'});
+
+
+  })
 
   </script>
 
