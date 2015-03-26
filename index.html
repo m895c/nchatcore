@@ -55,7 +55,10 @@
   $('#send_message_button').click(function(){
     if($('#message').val().length>0)
     {
-    socket.emit('chat message', $('#message').val());
+    var msg = { text: $('#message').val(),
+                senderId: "2"
+              }
+    socket.emit('chat message', msg);
     $('#message').val('');
     return false;}
 
@@ -63,7 +66,7 @@
 
 
     socket.on('chat message', function(msg){
-   $('ul.messages').append($('<li>').text(msg));
+   $('ul.messages').append($('<li>').text(msg.text));
 
     });
 
