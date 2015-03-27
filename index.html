@@ -82,7 +82,7 @@
     console.log("buttun push to room "+ room[0]);
     if(room[0] !== null)
     {
-    socket.emit('chat message', { text : $('#message').val(), roomtgt : room[0] });
+    socket.emit('chat message', { text : $('#message').val(), roomtgt : room[0], senderId: '9jgn6fa2as74' });
     $('ul.messages').append($('<li>').text($('#message').val()));
     $('#message').val('');
 
