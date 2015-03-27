@@ -23,12 +23,17 @@
         <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Juliana
     </button>
 
-    <button id="search" type="button" class="btn btn-primary btn-lg">
-        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Search
+    <button id="searchanan" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Search as Ananth
     </button>
 
+    <button id="searchjuli" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Search as Juliana
+    </button>
+
+
     <button id="infoanan" type="button" class="btn btn-primary btn-lg">
-        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Ananth
+        <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Ananth
     </button>
 
 
@@ -51,24 +56,51 @@
   <script src="https://code.jquery.com/jquery-2.1.3.min.js"> </script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script>
+  //Default Namespace
   var socket = io();
+  var room = [];
+  var matchflag = null;
+
   $('#send_message_button').click(function(){
     if($('#message').val().length>0)
     {
-    socket.emit('chat message', $('#message').val());
+    console.log("buttun push result0 "+ room[0]);
+    socket.emit('chat message', { text : $('#message').val(), roomtgt : room[0] });
+    $('ul.messages').append($('<li>').text($('#message').val()));
     $('#message').val('');
+
     return false;}
 
   });
 
-
-    socket.on('chat message', function(msg){
-   $('ul.messages').append($('<li>').text(msg));
+  //chatmessage displayed on list
+   socket.on('chat message', function(msg){
+   $('ul.messages').append($('<li>').text(msg.text));
 
     });
 
-    socket.on('matched', function(msg){
+  //matched joins   
+   socket.on('matched', function(msg){
+   $('ul.messages').append($('<li>').text("Matched received with room as:" +msg));
+     room[0] = msg ;
+     console.log( "room[0] is now : " + room[0]);
+     matchflag = 1;
+    
+    });
+
+   socket.on('infomessage', function(msg){
+   $('ul.messages').append($('<li>').text(msg.name + " has connected"));
+     
+    
+    });
+
+
+    socket.on('nomatch', function(msg){
    $('ul.messages').append($('<li>').text(msg));
+     $('ul.messages').append($('<li>').text("NOMatch received with room as:" +msg));
+    settimeout(6000);
+     $('ul.messages').append($('<li>').text("NOMatch Retry initiated after 6000ms"));
+    socket.emit('search', {name: 'Juliana', age: 30, sex: 0, target: 1, token: '8kjdlfa23874'});
 
     });
 
@@ -96,16 +128,19 @@
   });
 
 
-
-
-
-
-  $('#search').click(function(){
+  $('#searchjuli').click(function(){
 
     socket.emit('search', {name: 'Juliana', age: 30, sex: 0, target: 1, token: '8kjdlfa23874'});
 
 
-  })
+  });
+
+   $('#searchanan').click(function(){
+
+    socket.emit('search', {name: 'Ananth', age: 27, sex: 1, target: 0, token: '9jgn6fa2as74'});
+
+
+  });
 
   </script>
 
