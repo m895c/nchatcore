@@ -8,6 +8,9 @@ var connection = mysql.createConnection({
     password: 'bull5I!97!',
     database: 'nchat'
 });
+
+var CHAT_TIME_UP_IN_MS = 25000
+
 //Default Route
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -70,12 +73,19 @@ io.on('connection', function(socket) {
                 console.log("USER FOUND : " + result[0].sockid);
                 predate = new Date();
                 console.log("PREDATE IS : " + predate);
+
                 setTimeout(function() {
-                    console.log('Time is up');
+                    console.log('TIME UP');
+
+                    // Send timeUp signal to clients
+                    io.to(search.sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
+                    //io.to(search.sockid).emit('chat message', "SELF: " + search.sockid );
+                    io.to(result[0].sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
+
                     socket.leave(result[0].sockid);
                     postdate = new Date();
                     console.log("POST DATE IS : " + postdate);
-                }, 60000);
+                }, CHAT_TIME_UP_IN_MS);
             }
         });
     });
