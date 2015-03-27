@@ -17,27 +17,36 @@
 
   </head>
   <body>
+
+  <!--FB SDK INIT-->
+
+
     <!-- <h1>nChat core  E71lkjhs76 init //SOCid: NOT POPULATED<h1> -->
 
     <button id="infojuli" type="button" class="btn btn-primary btn-lg">
         <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Juliana
     </button>
 
-    <button id="searchanan" type="button" class="btn btn-primary btn-lg">
-        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Search as Ananth
+    <button id="infoanan" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Ananth
     </button>
 
     <button id="searchjuli" type="button" class="btn btn-primary btn-lg">
         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Search as Juliana
     </button>
 
-
-    <button id="infoanan" type="button" class="btn btn-primary btn-lg">
-        <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Ananth
+    <button id="searchanan" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Search as Ananth
     </button>
 
+    <button id="revealjuli" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-eye-save" aria-hidden="true"></span> Reveal Juli
+    </button>
 
-
+    <button id="revealanan" type="button" class="btn btn-primary btn-lg">
+        <span class="glyphicon glyphicon-eye-save" aria-hidden="true"></span> Reveal Ananth
+    </button>
+ 
     <section class="messages">
       <ul class="messages"></ul>
     </section>
@@ -55,23 +64,39 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://code.jquery.com/jquery-2.1.3.min.js"> </script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  
+
   <script>
   //Default Namespace
   var socket = io();
   var room = [];
   var matchflag = null;
 
+
+  //SEND SYSTEMS
+
+
   $('#send_message_button').click(function(){
     if($('#message').val().length>0)
     {
-    console.log("buttun push result0 "+ room[0]);
+    console.log("buttun push to room "+ room[0]);
+    if(room[0] !== null)
+    {
     socket.emit('chat message', { text : $('#message').val(), roomtgt : room[0] });
     $('ul.messages').append($('<li>').text($('#message').val()));
     $('#message').val('');
 
     return false;}
+    else
+    {
+    $('#message').val('');
+    }
+  }
 
   });
+
+
+  //RECEIVE SYSTEM
 
   //chatmessage displayed on list
    socket.on('chat message', function(msg){
@@ -104,8 +129,15 @@
 
     });
 
+    socket.on('disconnect', function  (msg) {
+      room[0] = null;
 
 
+      // body...
+    });
+
+
+//SEND SYSTEMS CONTINUE
 
   $("#message").keyup(function(event){
       if(event.keyCode == 13){
@@ -142,7 +174,24 @@
 
   });
 
-  </script>
+
+ $('#revealanan').click(function(){
+
+    socket.emit('reveal', {name: 'Ananth', age: 27, sex: 1, target: 0, token: '9jgn6fa2as74', roomtgt: room[0]});
+
+
+  });
+
+
+ $('#revealjuli').click(function(){
+
+    socket.emit('reveal', {name: 'Juliana', age: 30, sex: 0, target: 1, token: '8kjdlfa23874', roomtgt: room[0]});
+
+
+  });
+
+
+</script>
 
 
 </html>
