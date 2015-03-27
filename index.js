@@ -5,12 +5,10 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'bull5I!97!',
+    password: 'xcfc54123',
     database: 'nchat'
 });
-
-var CHAT_TIME_UP_IN_MS = 25000
-
+var CHAT_TIME_UP_IN_MS = 25000;
 //Default Route
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -73,15 +71,12 @@ io.on('connection', function(socket) {
                 console.log("USER FOUND : " + result[0].sockid);
                 predate = new Date();
                 console.log("PREDATE IS : " + predate);
-
                 setTimeout(function() {
                     console.log('TIME UP');
-
                     // Send timeUp signal to clients
                     io.to(search.sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
                     //io.to(search.sockid).emit('chat message', "SELF: " + search.sockid );
                     io.to(result[0].sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
-
                     socket.leave(result[0].sockid);
                     postdate = new Date();
                     console.log("POST DATE IS : " + postdate);
@@ -99,17 +94,15 @@ io.on('connection', function(socket) {
         console.log("disconnected: ", socket.client.id);
         connection.query('DELETE FROM lastknownuser WHERE sockid = ?', [socket.client.id], function(err, result) {
             if (err) throw err;
-            console.log("USER OFFLINE : " + result[0].id);
         });
         connection.query('UPDATE users SET ? WHERE sockid = ?', [{
             online: 0
         }, socket.client.id], function(err, result) {
             if (err) throw err;
-            console.log("USER OFFLINE : " + result[0].id);
         });
     });
     socket.on('reveal', function(msg) {
-        console.log("REAVEAl received from " + msg.name + " to: " + msg.roomtgt);
+        console.log("REVEAl received from " + msg.name + " to: " + msg.roomtgt);
         socket.to(msg.roomtgt).emit('chat message', {
             text: msg.name + "HAS BEEN REVEALED"
         });
