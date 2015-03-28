@@ -33,10 +33,10 @@ io.on('connection', function(socket) {
             online: 1,
             sockid: socket.client.id
         };
-        io.emit('chat message', {
-            text: "SELF : " + info.sockid,
-            roomtgt: info.sockid
-        });
+       // io.emit('chat message', {
+           // text: "SELF : " + info.sockid,
+          //  roomtgt: info.sockid
+        //});
         connection.query('INSERT IGNORE INTO users SET ?', info, function(err, result) {
             if (err) throw err;
             //console.log("User inserted users :" + result.insertId);
@@ -131,9 +131,9 @@ io.on('connection', function(socket) {
     //CLIENT REVEALS
     socket.on('reveal', function(msg) {
         console.log("REVEAl received from " + msg.name + " to: " + msg.roomtgt);
-        socket.to(msg.roomtgt).emit('chat message', {
-            text: msg.name + "HAS BEEN REVEALED"
-        });
+        //socket.to(msg.roomtgt).emit('chat message', {
+          //  text: msg.name + "HAS BEEN REVEALED"
+        //});
     });
 }); //END OF SOCKET CONNECTION
 //EXPRESS SERVER LISTENER
