@@ -31,17 +31,22 @@ io.on('connection', function(socket) {
             online: 1,
             sockid: socket.client.id
         };
+        io.emit('chat message', {
+            text: "SELF : " + info.sockid,
+            roomtgt: info.sockid
+        });
         connection.query('INSERT IGNORE INTO users SET ?', info, function(err, result) {
             if (err) throw err;
-            console.log("User inserted users :" + result.insertId);
+            //console.log("User inserted users :" + result.insertId);
         });
         connection.query('INSERT IGNORE INTO lastknownuser SET ?', info, function(err, result) {
             if (err) throw err;
-            console.log("User inserted lastknown :" + result.insertId);
+            //console.log("User inserted lastknown :" + result.insertId);
         });
     });
     //CLIENT SENDS SEARCH
     socket.on('search', function(msg) {
+        //Create Search object
         var search = {
             name: msg.name,
             age: msg.age,
@@ -50,36 +55,35 @@ io.on('connection', function(socket) {
             token: msg.token,
             sockid: socket.client.id
         };
-        var agelolim = parseInt(msg.age) - 5;
-        var ageuplim = parseInt(msg.age) + 5;
-        //pseudocode
+        //Age filters (Not Used here in Dev Mode)
+        //var agelolim = parseInt(msg.age) - 5; 
+        //var ageuplim = parseInt(msg.age) + 5;
+        //initializing an array to store the result of the matched sockid
         var result = [];
         result[0] = null;
-        connection.query('SELECT sockid FROM lastknownuser WHERE sex = ? AND age BETWEEN ? AND ? ORDER BY sockid ASC LIMIT 1', [msg.target, agelolim, ageuplim], function(err, result) {
+        //Search for a match
+        connection.query('SELECT sockid FROM lastknownuser WHERE sex = ? AND sockid != ? ORDER BY sockid ASC LIMIT 1', [msg.target, search.sockid], function(err, result) {
             if (err) throw err;
-            console.log("the search object is " + search.token);
-            console.log("the result is" + result[0].sockid);
+            //AND age BETWEEN ? AND ?   -->>PARAMS of [agelolim, ageuplim]  //This has been removed from query for Dev Mode.
+            //No Match conditions
             if (result[0] === null) {
                 io.to(search.sockid).emit('nomatch', "60");
             } else {
-                //socket.client(result[0].sockid).join(search.token);
-                io.to(search.sockid).emit('matched', result[0].sockid);
-                //io.to(search.sockid).emit('chat message', "SELF: " + search.sockid );
-                io.to(result[0].sockid).emit('matched', result[0].sockid);
-                // io.to(result[0].sockid).emit('chat message',"HOST " + result[0].sockid + "R" );
-                socket.join(result[0].sockid);
-                console.log("USER FOUND : " + result[0].sockid);
-                predate = new Date();
-                console.log("PREDATE IS : " + predate);
+                //Inform both clients and send them the room id 
+                //which is the room with name same as the token of the searcher
+                io.to(search.sockid).emit('matched', search.token);
+                io.to(result[0].sockid).emit('matched', search.token);
+                //CREATE ROOM WITH ROOM NAME AS THE SEARCHERS TOKEN and both searcher and matched are joined to it
+                socket.join(search.token); //joining searcher ::Note room is automatically created when you join it
+                io.sockets.connected[result[0].sockid].join(search.token); //joining matched
+                //KILL ROOM in Specified ms
                 setTimeout(function() {
                     console.log('TIME UP');
                     // Send timeUp signal to clients
                     io.to(search.sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
-                    //io.to(search.sockid).emit('chat message', "SELF: " + search.sockid );
                     io.to(result[0].sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
-                    socket.leave(result[0].sockid);
-                    postdate = new Date();
-                    console.log("POST DATE IS : " + postdate);
+                    socket.leave(search.token);
+                    io.sockets.connected[result[0].sockid].leave(search.token);
                 }, CHAT_TIME_UP_IN_MS);
             }
         });
@@ -101,6 +105,7 @@ io.on('connection', function(socket) {
             if (err) throw err;
         });
     });
+    //CLIENT REVEALS
     socket.on('reveal', function(msg) {
         console.log("REVEAl received from " + msg.name + " to: " + msg.roomtgt);
         socket.to(msg.roomtgt).emit('chat message', {
@@ -108,10 +113,11 @@ io.on('connection', function(socket) {
         });
     });
 }); //END OF SOCKET CONNECTION
-//EXPRESS SERVER START.
+//EXPRESS SERVER LISTENER
 http.listen(3000, function() {
     console.log('listening on localhost:3000');
 });
+//GRACEFUL EXIT LOGIC
 var killing_app = false;
 process.on('SIGINT', function() {
     console.log("\n");
