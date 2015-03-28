@@ -70,11 +70,16 @@ io.on('connection', function(socket) {
             if (err) throw err;
             //AND age BETWEEN ? AND ?   -->>PARAMS of [agelolim, ageuplim]  //This has been removed from query for Dev Mode.
             //No Match conditions
+            console.log("The matched persons i.e result[0] is:" + result[0]);
             if (result[0] === null || result[0] === undefined ) {
+                console.log("ENTERED NO MATCH CONDITION");
                 io.to(search.sockid).emit('nomatch', "60");
             } else
 
             if (result[0] !== null || result[0] !== undefined ) {
+
+                console.log("ENTERED MATCH CONDITIONAL");
+
                 //Inform both clients and send them the room id 
                 //which is the room with name same as the token of the searcher
                 io.to(search.sockid).emit('matched', search.token);
