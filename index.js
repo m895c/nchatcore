@@ -143,7 +143,8 @@ io.on('connection', function(socket) {
                     io.to(search.sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
                     io.to(result[0].sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
                     socket.leave(search.token);
-                    io.sockets.connected[result[0].sockid].leave(search.token);
+                    if(result[0] !== undefined)
+                    {io.sockets.connected[result[0].sockid].leave(search.token);}
                 }, CHAT_TIME_UP_IN_MS);
             }
         });
