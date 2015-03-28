@@ -81,10 +81,11 @@ io.on('connection', function(socket) {
         //Search for a match
 
 
-        connection.query('SELECT sockid FROM lastknownuser WHERE sex = ? AND sockid != \"?\" AND online = \'0\' ORDER BY sockid ASC LIMIT 1', [msg.target, search.sockid], function(err, result) {
+        connection.query('SELECT sockid FROM lastknownuser WHERE sockid != \"?\" AND online = \'0\' ORDER BY sockid ASC LIMIT 1', [msg.target, search.sockid], function(err, result) {
             if (err) throw err;
             //console.log("LASTKNOWSEARCHED : " + resultId);
             //AND age BETWEEN ? AND ?   -->>PARAMS of [agelolim, ageuplim]  //This has been removed from query for Dev Mode.
+            // sex = ? AND 
             //No Match conditions
            
             if (result[0] === null || result[0] === undefined ) {
