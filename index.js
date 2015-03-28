@@ -72,7 +72,9 @@ io.on('connection', function(socket) {
             //No Match conditions
             if (result[0] === null || result[0] === undefined ) {
                 io.to(search.sockid).emit('nomatch', "60");
-            } else {
+            } else
+
+            if (result[0]) {
                 //Inform both clients and send them the room id 
                 //which is the room with name same as the token of the searcher
                 io.to(search.sockid).emit('matched', search.token);
@@ -81,6 +83,8 @@ io.on('connection', function(socket) {
                 socket.join(search.token); //joining searcher ::Note room is automatically created when you join it
                 io.sockets.connected[result[0].sockid].join(search.token); //joining matched
                 //KILL ROOM in Specified ms
+
+
                 setTimeout(function() {
                     console.log('TIME UP');
                     // Send timeUp signal to clients
