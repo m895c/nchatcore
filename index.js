@@ -49,14 +49,26 @@ io.on('connection', function(socket) {
     //CLIENT SENDS SEARCH
     socket.on('search', function(msg) {
         //Create Search object
+
+          // connection.query('UPDATE lastknownuser SET ? WHERE sockid = ?', [{
+          //        online: 1
+          //        }, socket.client.id], function(err, matchreset) {
+          //          if (err) throw err;
+          //        });
+  
+
+
         var search = {
             name: msg.name,
             age: msg.age,
             sex: msg.sex,
             target: msg.target,
             token: msg.token,
-            sockid: socket.client.id
+            sockid: socket.client.id,
+            online: 0
         };
+
+
 
         console.log("Message object token is: " + msg.token);
         console.log("Search object token is: " + search.token);
@@ -69,7 +81,7 @@ io.on('connection', function(socket) {
         //Search for a match
 
 
-        connection.query('SELECT sockid FROM lastknownuser WHERE sex = ? AND sockid != \"?\" ORDER BY sockid ASC LIMIT 1', [msg.target, search.sockid], function(err, result) {
+        connection.query('SELECT sockid FROM lastknownuser WHERE sex = ? AND sockid != \"?\" AND online = \'0\' ORDER BY sockid ASC LIMIT 1', [msg.target, search.sockid], function(err, result) {
             if (err) throw err;
             //console.log("LASTKNOWSEARCHED : " + resultId);
             //AND age BETWEEN ? AND ?   -->>PARAMS of [agelolim, ageuplim]  //This has been removed from query for Dev Mode.
@@ -78,6 +90,16 @@ io.on('connection', function(socket) {
             if (result[0] === null || result[0] === undefined ) {
                 console.log("ENTERED NO MATCH CONDITION");
                 io.to(search.sockid).emit('nomatch', "60");
+
+                  connection.query('UPDATE lastknownuser SET ? WHERE sockid = ?', [{
+                 online: 0
+                 }, socket.client.id], function(err, result) {
+                   if (err) throw err;
+                 });  
+              
+
+                             
+
             } else
 
             if (result[0] !== null || result[0] !== undefined ) {
@@ -98,6 +120,21 @@ io.on('connection', function(socket) {
                 io.sockets.connected[result[0].sockid].join(search.token); //joining matched
                 //KILL ROOM in Specified ms
                 console.log("Room join success for matched! ");
+
+
+                connection.query('UPDATE lastknownuser SET ? WHERE sockid = ?', [{
+                 online: 1
+                 }, socket.client.id], function(err, result) {
+                   if (err) throw err;
+                 });  
+
+                connection.query('UPDATE lastknownuser SET ? WHERE sockid = ?', [{
+                 online: 1
+                 }, result[0].sockid], function(err, result) {
+                   if (err) throw err;
+                 });              
+
+           
 
 
                 setTimeout(function() {
@@ -122,19 +159,19 @@ io.on('connection', function(socket) {
         connection.query('DELETE FROM lastknownuser WHERE sockid = ?', [socket.client.id], function(err, result) {
             if (err) throw err;
         });
-        connection.query('UPDATE users SET ? WHERE sockid = ?', [{
-            online: 0
-        }, socket.client.id], function(err, result) {
-            if (err) throw err;
-        });
+        // connection.query('UPDATE users SET ? WHERE sockid = ?', [{
+        //     online: 0
+        // }, socket.client.id], function(err, result) {
+        //     if (err) throw err;
+        // });
     });
     //CLIENT REVEALS
     socket.on('reveal', function(msg) {
         console.log("REVEAl received from " + msg.name + " to: " + msg.roomtgt);
-        //socket.to(msg.roomtgt).emit('chat message', {
-          //  text: msg.name + "HAS BEEN REVEALED"
-        //});
+        socket.to(msg.roomtgt).emit('reveal', msg );
     });
+
+
 }); //END OF SOCKET CONNECTION
 //EXPRESS SERVER LISTENER
 http.listen(80, function() {
