@@ -57,6 +57,9 @@ io.on('connection', function(socket) {
             token: msg.token,
             sockid: socket.client.id
         };
+
+        console.log("Message object token is: " + msg.token);
+        console.log("Search object token is: " + search.token);
         //Age filters (Not Used here in Dev Mode)
         //var agelolim = parseInt(msg.age) - 5; 
         //var ageuplim = parseInt(msg.age) + 5;
@@ -70,7 +73,7 @@ io.on('connection', function(socket) {
             if (err) throw err;
             //AND age BETWEEN ? AND ?   -->>PARAMS of [agelolim, ageuplim]  //This has been removed from query for Dev Mode.
             //No Match conditions
-            console.log("The matched persons i.e result[0] is:" + result[0]);
+            console.log("The matched persons i.e result[0] is:" + result[0].sockid);
             if (result[0] === null || result[0] === undefined ) {
                 console.log("ENTERED NO MATCH CONDITION");
                 io.to(search.sockid).emit('nomatch', "60");
@@ -85,9 +88,13 @@ io.on('connection', function(socket) {
                 io.to(search.sockid).emit('matched', search.token);
                 io.to(result[0].sockid).emit('matched', search.token);
                 //CREATE ROOM WITH ROOM NAME AS THE SEARCHERS TOKEN and both searcher and matched are joined to it
+                console.log("about to merge the rooms");
                 socket.join(search.token); //joining searcher ::Note room is automatically created when you join it
+                console.log("Room join success for searcher! Now trying matched");
+
                 io.sockets.connected[result[0].sockid].join(search.token); //joining matched
                 //KILL ROOM in Specified ms
+                console.log("Room join success for matched! ");
 
 
                 setTimeout(function() {
