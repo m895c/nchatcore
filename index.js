@@ -74,7 +74,7 @@ io.on('connection', function(socket) {
                 io.to(search.sockid).emit('nomatch', "60");
             } else
 
-            if (result[0]) {
+            if (result[0] !== null || result[0] !== undefined ) {
                 //Inform both clients and send them the room id 
                 //which is the room with name same as the token of the searcher
                 io.to(search.sockid).emit('matched', search.token);
