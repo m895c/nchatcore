@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
     password: 'bu115I!97!',
     database: 'nchat'
 });
-var CHAT_TIME_UP_IN_MS = 25000;
+var CHAT_TIME_UP_IN_MS = 120000;
 //Default Route
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
