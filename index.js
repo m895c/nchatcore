@@ -22,6 +22,8 @@ io.on('connection', function(socket) {
     //CLIENT SENDS INFO MESSAGE WITH USER:
     socket.on('info', function(msg) {
         io.emit('infomessage', msg);
+        console.log(msg.name + " With token " +  msg.token + " with sockid " + socket.client.id + "has connected");
+
         var info = {
             name: msg.name,
             age: msg.age,
