@@ -64,11 +64,13 @@ io.on('connection', function(socket) {
         var result = [];
         result[0] = null;
         //Search for a match
+
+
         connection.query('SELECT sockid FROM lastknownuser WHERE sex = ? AND sockid != ? ORDER BY sockid ASC LIMIT 1', [msg.target, search.sockid], function(err, result) {
             if (err) throw err;
             //AND age BETWEEN ? AND ?   -->>PARAMS of [agelolim, ageuplim]  //This has been removed from query for Dev Mode.
             //No Match conditions
-            if (result[0] === null) {
+            if (result[0] === null || result[0] === undefined ) {
                 io.to(search.sockid).emit('nomatch', "60");
             } else {
                 //Inform both clients and send them the room id 
