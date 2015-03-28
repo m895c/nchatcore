@@ -5,7 +5,7 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'xcfc54123',
+    password: 'bu115I!97!',
     database: 'nchat'
 });
 var CHAT_TIME_UP_IN_MS = 25000;
@@ -138,4 +138,21 @@ process.on('SIGINT', function() {
         console.log("Exit wait complete");
         process.exit();
     }, 10000);
+});
+
+process.on('message', function(msg) {
+    console.log("\n");
+    if (msg == 'shutdown') {
+    console.log("[PROGRESS] Gracefully shutting down from SIGINT (Ctrl+C)");
+    console.log("[PROGRESS] Disconnecting all sockets...");
+    console.log(Object.keys(io.engine.clients));
+    Object.keys(io.engine.clients).forEach(function(listener) {
+        console.log(listener);
+        io.sockets.connected[listener].disconnect();
+    });
+    console.log("[PROGRESS] Thank you bye bye <3 xoxo... please wait to exit");
+    setTimeout(function() {
+        console.log("Exit wait complete");
+        process.exit();
+    }, 10000);}
 });
