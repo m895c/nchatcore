@@ -18,6 +18,7 @@ coverage
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
+config/local.js
 
 # Dependency directory
 # Commenting this out is preferred by some people, see
