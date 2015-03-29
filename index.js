@@ -145,9 +145,9 @@ io.on('connection', function(socket) {
                     io.to(result[0].sockid).emit('timeUp', CHAT_TIME_UP_IN_MS);
                     socket.leave(search.token);
                     if(result[0] !== undefined){
-                      var connection = io.sockets.connected[result[0].sockid]
-                      if connection !== undefined {
-                        connection.leave(search.token);
+                      var connectcheck = io.sockets.connected[result[0].sockid];
+                      if (connectcheck !== undefined) {
+                        connectcheck.leave(search.token);
                       }
                     }
                 }, CHAT_TIME_UP_IN_MS);
